@@ -25,36 +25,44 @@ describe 'HMC login smoke test' do
 
     @driver.find_element(:link, "Users").click
     res = @driver.find_element(:link, "Hadoop Users")
-   # 3) Wait for page and check that page has title Hadoop Users - Hadoop Management Console. Find table by id="hadoop_users" and check that it has more then 10 rows.
-   #  4) Find element with id="hadoop_users_filter" and then find text field under it.
- #     5) Input in the field "abrakadabra" and check that table has no rows.
-#      6) Input in the field "cos" and check that table has 2 rows in it
-     #       7) Input in the field "petr" and check that table has 1 row in it
-      #      8) Find link logout and click it
-
-    # Do a find in the list for "cheesecake"
-    res = links.find {|el| el.text.include? ("Ares, Apollo (Hadoop Access Test)")}
-
-    res.should_not be_nil
     res.click
-    @wait.until{@driver.title.include?("Hadoop Access Testing - Hadoop Management Console")}
+    @wait.until{@driver.title.include?("Hadoop Users - Hadoop Management Console")}
 
-    links = @driver.find_elements(:tag_name, "a")
-    #puts (links)
-    # Do a find in the list for "cheesecake"
+    res=@driver.find_element(id: 'hadoop_users')
+    links = res.find_elements(:tag_name, "tr")
+    links.should_not be_ni17l
+#check rows
+    links.count.should be >10
 
-    res = links.find {|el| el.text.include? ("Logout")}
-    #    links.each do |i|
-    #     puts "i  is #{i.text}"
-    #   end
-    #   end
+    res=@driver.find_element(id: 'hadoop_users_filter')
+    res1=res.find_elements(:tag_name, "input")
+    res1.should_not be_nil
+    res1[0].send_keys('abrakadabra')
+
+    res1[0].send_keys('')
+    res1[0].send_keys('cos')
+    links = res.find_elements(:tag_name, "tr")
+    links.should_not be_nil
+    res1[0].send_keys('')
+
+    res1[0].send_keys('petr')
+    links = res.find_elements(:tag_name, "tr")
+    links.should_not be_nil
+
+    res=@driver.find_element(id: 'hadoop_users')
+    links = res.find_elements(:tag_name, "tr")
+    links.should_not be_nil
+ #links.should be_empty
+    links[0].text.should include("No m")
+
+#check rows
+
+
+
     @driver.find_element(:link, "M").click
     res = @driver.find_element(:link, "Logout")
-
     res.should_not be_nil
-
     res.click
-
     @wait.until{@driver.find_element(id: 'user_session_login')}
 
   end
